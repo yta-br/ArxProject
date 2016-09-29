@@ -70,11 +70,7 @@
 
 
 //-----------------------------------------------------------------------------
-#include "DocData.h" //- Your document specific data class holder
 #include <afxcontrolbars.h>
-
-//- Declare it as an extern here so that it becomes available in all modules
-extern AcApDataManager<CDocData> DocVars ;
 
 #pragma pack (pop)
 
