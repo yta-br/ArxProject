@@ -115,10 +115,8 @@ void CreateToolbars()
 	GetModuleFileName(_hdllInstance, szFileName, MAX_PATH);
 	CString csPath(szFileName);
 	csPath = csPath.Left(csPath.ReverseFind(_T('\\')));
-	AfxMessageBox(csPath);
 
 	CString icoPath = csPath + _T("\\block.ico");
-	AfxMessageBox(icoPath);
     hr = tlbr->AddToolbarButton(index, L"SomeBlock", L"Creates some block entity", L"MyCommandLocal ", vtFalse, &button);
     hr = button->SetBitmaps(CComBSTR(icoPath),CComBSTR(icoPath));
     button->Release();

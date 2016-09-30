@@ -14,7 +14,8 @@ void MFCDialog()
 
 	CInputDlg dlg(CWnd::FromHandle(adsw_acadMainWnd()));
  	dlg.DoModal();
-	AddBlock(dlg.strName);
+	if (dlg.strName.GetLength())
+		AddBlock(dlg.strName);
 
 }
 
@@ -54,10 +55,6 @@ void CInputDlg::OnBnClickedOk()
 	m_edtName.GetLine(linecount, strName.GetBuffer(len), len);
 	strName.ReleaseBuffer(len);
 
-	if (strName.GetLength())
-	{
-		MessageBox(strName);
-	}
 	CDialogEx::OnOK();
 }
 
