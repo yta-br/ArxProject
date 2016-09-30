@@ -25,6 +25,7 @@
 #include "StdAfx.h"
 #include "resource.h"
 #include "InputDlg.h"
+#include "btnmnu.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("yta")
 
@@ -37,7 +38,7 @@ public:
 
 	virtual AcRx::AppRetCode On_kInitAppMsg (void *pkt) {
 		// TODO: Load dependencies here
-
+                 UpdateUserInterfaceForPolySamp();
 		// You *must* call On_kInitAppMsg here
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kInitAppMsg (pkt) ;
 		

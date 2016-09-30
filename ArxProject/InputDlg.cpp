@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "InputDlg.h"
 #include "afxdialogex.h"
+#include "BlockCreater.h"
 
 void MFCDialog()
 {
@@ -13,6 +14,8 @@ void MFCDialog()
 
 	CInputDlg dlg(CWnd::FromHandle(adsw_acadMainWnd()));
  	dlg.DoModal();
+	AddBlock(dlg.strName);
+
 }
 
 // CInputDlg dialog
@@ -46,7 +49,6 @@ END_MESSAGE_MAP()
 
 void CInputDlg::OnBnClickedOk()
 {
-	CString strName;
 	int linecount = 0;
 	int len = m_edtName.LineLength(m_edtName.LineIndex(linecount));
 	m_edtName.GetLine(linecount, strName.GetBuffer(len), len);

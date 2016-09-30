@@ -9,6 +9,8 @@ class CInputDlg : public CDialogEx
 	DECLARE_DYNAMIC(CInputDlg)
 
 public:
+	CString strName;
+
 	CInputDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CInputDlg();
 
@@ -26,4 +28,5 @@ public:
 	CEdit m_edtName;
 	afx_msg void OnEnChangeEdit();
 };
+
 void MFCDialog();
