@@ -54,7 +54,7 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
-
+		CleanUpUserInterfaceForPolySamp();
 		return (retCode) ;
 	}
 
