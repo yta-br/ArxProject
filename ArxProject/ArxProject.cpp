@@ -17,16 +17,17 @@ AC_IMPLEMENT_EXTENSION_MODULE(ArxProjectDLL)
 //-----------------------------------------------------------------------------
 //- DLL Entry Point
 extern "C"
-BOOL WINAPI DllMain (HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved) {
+BOOL WINAPI DllMain (HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved) 
+{
 	//- Remove this if you use lpReserved
 	UNREFERENCED_PARAMETER(lpReserved) ;
-
-	if ( dwReason == DLL_PROCESS_ATTACH ) {
+	if(dwReason == DLL_PROCESS_ATTACH )
+	{
         _hdllInstance =hInstance ;
-
-		ArxProjectDLL.AttachInstance (hInstance) ;
-		InitAcUiDLL () ;
-	} else if ( dwReason == DLL_PROCESS_DETACH ) {
+		ArxProjectDLL.AttachInstance(hInstance) ;
+		InitAcUiDLL() ;
+	} else if (dwReason == DLL_PROCESS_DETACH)
+	{
 		ArxProjectDLL.DetachInstance () ;
 	}
 	return (TRUE) ;

@@ -7,21 +7,17 @@
 
 
 #include <afxdisp.h>        // MFC OLE automation classes
-
-
-
 #include "adslib.h"
 #include "acadi.h"
 #include "rxmfcapi.h"
-
 #include "acadi_i.c"
 
 
 bool getApplication(LPDISPATCH * pVal)
 {
     LPDISPATCH pDispatch = acedGetAcadWinApp()->GetIDispatch(TRUE);
-    if (pDispatch == NULL)
-        return false;
+    if(pDispatch == NULL)
+		return false;
     *pVal = pDispatch;
     return true;
 }
@@ -29,51 +25,41 @@ bool getApplication(LPDISPATCH * pVal)
 
 bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
 {
-
-    IAcadApplication *acadApp = NULL;
+	IAcadApplication *acadApp = NULL;
     LPDISPATCH  pDisp = NULL;
-
-    if (!getApplication(&pDisp))
+    if(!getApplication(&pDisp))
         return false;
-
     HRESULT hr = S_OK;
     hr = pDisp->QueryInterface(IID_IAcadApplication, (LPVOID*)&acadApp);
-    if (FAILED(hr))
+    if(FAILED(hr))
         return false;
-
-
     LPDISPATCH  pTempDisp = NULL;
     IAcadMenuGroups *mnuGrps = NULL;
     long cnt = 0;
-
     //get the menu groups
     hr = acadApp->get_MenuGroups(&mnuGrps);
-    if (FAILED(hr))
+    if(FAILED(hr))
     {
         acadApp->Release();
         return false;
     }
     mnuGrps->get_Count(&cnt);
-
-
     //get AutoCAD menu group. say it is index 0.
     IAcadMenuGroup *mnuGrp = NULL;
-
     VARIANT  vtName;
     vtName.vt = VT_I4;
     BSTR  grpName;
     bool found = false ;
-    for (long i=0; i < cnt; i++)
+    for(long i=0; i < cnt; i++)
     {
         vtName.lVal = i;
         hr = mnuGrps->Item(vtName, &mnuGrp);
-        if (FAILED(hr))
+        if(FAILED(hr))
             return false;
-
-
+		
         hr  = mnuGrp->get_Name(&grpName);
         CString cgrpName(grpName);
-        if (cgrpName.CompareNoCase(_T("Acad"))==0) 
+        if(cgrpName.CompareNoCase(_T("Acad"))==0) 
         {
             found = true;
             *pVal = mnuGrp;
@@ -85,11 +71,10 @@ bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
     return found;
 }
 
-
 void CreateToolbars()
 {
     IAcadMenuGroup *mnuGrp = NULL;
-    if (!getAcadMenuGroup(&mnuGrp))
+    if(!getAcadMenuGroup(&mnuGrp))
         return ;
     //now get all the popup menus 
     IAcadToolbars  *tlbrs = NULL;
@@ -100,7 +85,7 @@ void CreateToolbars()
     IAcadToolbar  *tlbr = NULL;
     hr = tlbrs->Add(L"SOMEBLOCK APPLICATION", &tlbr);
     if FAILED(hr)
-        return;
+		return;
     tlbrs->Release();
     //now add toolbar buttons
     IAcadToolbarItem *button=NULL;
@@ -131,10 +116,8 @@ void CreateToolbars()
 void CleanUpToolbars()
 {
     IAcadMenuGroup *mnuGrp = NULL;
-    if (!getAcadMenuGroup(&mnuGrp))
+    if(!getAcadMenuGroup(&mnuGrp))
         return ;
-
-
     IAcadToolbars  *tlbrs = NULL;
     HRESULT hr = S_OK;
 
@@ -148,7 +131,7 @@ void CleanUpToolbars()
     BSTR  tempName;
 
     VARIANT vtName;
-    for ( long i=0; i < cnt; i++)
+    for(long i=0; i < cnt; i++)
     {
         vtName.vt = VT_I4;
         vtName.lVal = i;
@@ -159,20 +142,15 @@ void CleanUpToolbars()
         if(tlbrName.CompareNoCase(_T("SOMEBLOCK APPLICATION"))==0)
         {
 			myTlbr->Delete();
-            //can not call following because delete has already removed it.
-            //    polyTlbr->Release();
             break;
         }
         else
 			myTlbr->Release();
 
     }
-
     tlbrs->Release();
     return;
 }
-
-
 
 void UpdateUserInterfaceForPolySamp()
 {
@@ -182,5 +160,4 @@ void UpdateUserInterfaceForPolySamp()
 void CleanUpUserInterfaceForPolySamp()
 {
     CleanUpToolbars();
-
 }

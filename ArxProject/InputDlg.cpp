@@ -20,7 +20,6 @@ void MFCDialog()
 }
 
 // CInputDlg dialog
-
 IMPLEMENT_DYNAMIC(CInputDlg, CDialogEx)
 
 CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
@@ -39,11 +38,9 @@ void CInputDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT, m_edtName);
 }
 
-
 BEGIN_MESSAGE_MAP(CInputDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CInputDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
-
 
 // CInputDlg message handlers
 
@@ -54,7 +51,6 @@ void CInputDlg::OnBnClickedOk()
 	int len = m_edtName.LineLength(m_edtName.LineIndex(linecount));
 	m_edtName.GetLine(linecount, strName.GetBuffer(len), len);
 	strName.ReleaseBuffer(len);
-
 	CDialogEx::OnOK();
 }
 
