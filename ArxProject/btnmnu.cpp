@@ -12,7 +12,15 @@
 #include "rxmfcapi.h"
 #include "acadi_i.c"
 
+CString GetWorkPath()
+{
+	TCHAR szFileName[MAX_PATH];
+	GetModuleFileName(_hdllInstance, szFileName, MAX_PATH);
+	CString csPath(szFileName);
+	csPath = csPath.Left(csPath.ReverseFind(_T('\\')));
 
+	return csPath;
+}
 bool getApplication(LPDISPATCH * pVal)
 {
     LPDISPATCH pDispatch = acedGetAcadWinApp()->GetIDispatch(TRUE);
@@ -25,6 +33,9 @@ bool getApplication(LPDISPATCH * pVal)
 
 bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
 {
+	bool found = false;
+
+/*	
 	IAcadApplication *acadApp = NULL;
     LPDISPATCH  pDisp = NULL;
     if(!getApplication(&pDisp))
@@ -38,7 +49,7 @@ bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
     long cnt = 0;
     //get the menu groups
     hr = acadApp->get_MenuGroups(&mnuGrps);
-    if(FAILED(hr))
+	if(FAILED(hr))
     {
         acadApp->Release();
         return false;
@@ -49,7 +60,6 @@ bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
     VARIANT  vtName;
     vtName.vt = VT_I4;
     BSTR  grpName;
-    bool found = false ;
     for(long i=0; i < cnt; i++)
     {
         vtName.lVal = i;
@@ -67,97 +77,24 @@ bool getAcadMenuGroup(IAcadMenuGroup  **pVal)
         }
     }
 
-    acadApp->Release();
+    acadApp->Release();*/
     return found;
+}
+static void _LoadMyCui(void)
+{
+	//if (!acedIsMenuGroupLoaded(_T("MyMenuGroups")))
+	//	acedCommand(RTSTR, _T("_.cuiload"), RTSTR, _T("my.cuix"), 0);
 }
 
 void CreateToolbars()
 {
-    IAcadMenuGroup *mnuGrp = NULL;
-    if(!getAcadMenuGroup(&mnuGrp))
-        return ;
-    //now get all the popup menus 
-    IAcadToolbars  *tlbrs = NULL;
-    HRESULT hr = S_OK;
-    hr = mnuGrp->get_Toolbars(&tlbrs);
-    mnuGrp->Release();
-    //let us create toolbars for polysamp
-    IAcadToolbar  *tlbr = NULL;
-    hr = tlbrs->Add(L"SOMEBLOCK APPLICATION", &tlbr);
-    if FAILED(hr)
-		return;
-    tlbrs->Release();
-    //now add toolbar buttons
-    IAcadToolbarItem *button=NULL;
-    VARIANT index;
-    index.vt = VT_I4;
-    index.lVal = 100l;
-
-    VARIANT vtFalse;
-    vtFalse.vt = VT_BOOL;
-    vtFalse.boolVal = VARIANT_FALSE;
-	TCHAR szFileName[MAX_PATH];
-	GetModuleFileName(_hdllInstance, szFileName, MAX_PATH);
-	CString csPath(szFileName);
-	csPath = csPath.Left(csPath.ReverseFind(_T('\\')));
-
-	CString icoPath = csPath + _T("\\block.ico");
-    hr = tlbr->AddToolbarButton(index, L"SomeBlock", L"Creates some block entity", L"MyCommandLocal ", vtFalse, &button);
-    hr = button->SetBitmaps(CComBSTR(icoPath),CComBSTR(icoPath));
-    button->Release();
-
-    tlbr->Dock(acToolbarDockLeft);
-    tlbr->Release();
-    return;
-
-
+	CString csPAth = GetWorkPath();
+	acedLoadPartialMenu(csPAth + _T("\\SomeBlock.cuix"));
 }
 
 void CleanUpToolbars()
 {
-    IAcadMenuGroup *mnuGrp = NULL;
-    if(!getAcadMenuGroup(&mnuGrp))
-        return ;
-    IAcadToolbars  *tlbrs = NULL;
-    HRESULT hr = S_OK;
-
-    hr = mnuGrp->get_Toolbars(&tlbrs);
-    mnuGrp->Release();
-
-    long cnt = 0;
-    hr = tlbrs->get_Count(&cnt);
-
-    IAcadToolbar *myTlbr = NULL;
-    BSTR  tempName;
-
-    VARIANT vtName;
-    for(long i=0; i < cnt; i++)
-    {
-        vtName.vt = VT_I4;
-        vtName.lVal = i;
-        hr = tlbrs->Item(vtName, &myTlbr);
-        hr = myTlbr->get_Name(&tempName);
-        CString tlbrName(tempName);
-        SysFreeString(tempName);
-        if(tlbrName.CompareNoCase(_T("SOMEBLOCK APPLICATION"))==0)
-        {
-			myTlbr->Delete();
-            break;
-        }
-        else
-			myTlbr->Release();
-
-    }
-    tlbrs->Release();
-    return;
+	CString csPAth = GetWorkPath();
+	acedUnloadPartialMenu(csPAth + _T("\\SomeBlock.cuix"));
 }
 
-void UpdateUserInterfaceForPolySamp()
-{
-    CreateToolbars();
-}
-
-void CleanUpUserInterfaceForPolySamp()
-{
-    CleanUpToolbars();
-}
